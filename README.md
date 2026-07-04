@@ -10,16 +10,27 @@ Bruker man Git vil man få versjonsstyring på oppdatering av kravene.
 # Hvorfor? #
 Jeg har jobbet med offentlig anskaffelse i 9 år og har sett mange spennende forsøk på å lage kravbanker i alt fra programvare for prosjektstyring til sharepoint, business intellgence og kjøp av avanserte verktøyer. Personlig tror jeg ikke det trenger å være så vanskelig. Litt HTML, Git og Claude kommer man lang vei med.
 
+# Data i apllikasjonen #
+Data i apllikasjonen idag er eksempel data som er generert av KI. Kravene hørtes kanskje ikke så dumme ut, men jeg kan dessverre ikke si god for kvaliteten på disse selvom de kan være nok så overbevisende. Selv om krav gjerne kan leses nok så universelle er de gjerne tilpasset en kontekst for en organisasjon.
+
 # Screenshot
 
-[![Bilde av applikasjonen](https://raw.githubusercontent.com/RubberD/Kravbank/refs/heads/main/assets/screenshot.png?token=GHSAT0AAAAAAEBVX3NRL7IH47TKRP6LZETO2SJD2YA)]
+[![Bilde av applikasjonen](https://github.com/RubberD/Kravbank/blob/d4ee923689f2481bca36838eca16f47fa7785ef4/assets/screenshot.png)]
 
 
 # Kjøre applikasjonen #
 
 ## Docker fra hub ##
+Kjør det som en container fra Docker Hub med kommandoen:
+
+    Docker run -p 3000:3000 lstorgaard/kravbank_html:1.1
+
+Men det er ikke mulig å endre på kravene.
 
 ## Clon repo ##
+Først klon repo:
 
+    git clone https://github.com/RubberD/Kravbank/
 
-
+1. Last opp index.html support.js, mappene krav og assets til en publiseringstjeneste 
+2. eller kjør NodeJs serveren som en container du bygger i din favourit Hyperskaler eller privatsky.
