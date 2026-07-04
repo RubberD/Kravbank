@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    ::-webkit-scrollbar{width:10px;height:10px}
+    ::-webkit-scrollbar-thumb{background:#d3d7dd;border-radius:8px;border:2px solid transparent;background-clip:content-box}
+    ::-webkit-scrollbar-thumb:hover{background:#b9bec6;background-clip:content-box}
+    @keyframes kbspin{to{transform:rotate(360deg)}}
+    @keyframes kbpulse{0%,100%{opacity:.55}50%{opacity:1}}
+  </style>
+</helmet>
+
+<div style="--accent: {{ accent }}; --accent-soft: {{ accentSoft }}; --accent-border: {{ accentBorder }}; --accent-ink: {{ accentInk }}; display:flex; flex-direction:column; height:100vh; width:100%; font-family:'Source Sans 3', system-ui, sans-serif; color:#1f2430; background:#f5f6f8; overflow:hidden;">
+
+  <!-- ============ TOPPLINJE ============ -->
+  <header style="flex:none; display:flex; align-items:center; gap:20px; padding:16px 28px; background:#ffffff; border-bottom:1px solid #e7eaee; z-index:20;">
+    <div style="display:flex; align-items:center; gap:13px; min-width:0;">
+      <div style="flex:none; width:38px; height:38px; border-radius:10px; background:var(--accent,#4f46e5); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:18px; letter-spacing:-.5px;">K</div>
+      <div style="min-width:0;">
+        <div style="font-size:18px; font-weight:700; letter-spacing:-.3px; line-height:1.1;">IKT-kravbank</div>
+        <div style="font-size:12.5px; color:#8a9099; line-height:1.3;">Krav for anskaffelse av digitale tjenester</div>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:8px; margin-left:auto;">
+      <div style="display:flex; align-items:baseline; gap:6px; padding:7px 14px; border-radius:9px; background:#f3f4f6;">
+        <span style="font-size:16px; font-weight:700;">{{ totalCount }}</span>
+        <span style="font-size:12px; color:#8a9099; font-weight:500;">krav totalt</span>
+      </div>
+      <div style="display:flex; align-items:baseline; gap:6px; padding:7px 14px; border-radius:9px; background:var(--accent-soft,#eef2ff); color:var(--accent-ink,#3730a3);">
+        <span style="font-size:16px; font-weight:700;">{{ selectedCount }}</span>
+        <span style="font-size:12px; font-weight:600; opacity:.8;">valgt</span>
+      </div>
+      <button onClick="{{ clearSelection }}" style="cursor:pointer; border:1px solid #dfe3e8; background:#fff; color:#5a626c; font-family:inherit; font-size:13px; font-weight:600; padding:9px 14px; border-radius:9px;" style-hover="background:#f3f4f6;">Tøm valg</button>
+      <button onClick="{{ exportCsv }}" title="Last ned valgte krav som CSV (semikolon-separert for norsk Excel)" style="cursor:pointer; border:none; background:var(--accent,#4f46e5); color:#fff; font-family:inherit; font-size:13px; font-weight:700; padding:10px 18px; border-radius:9px; display:flex; align-items:center; gap:8px; box-shadow:0 1px 2px rgba(20,30,60,.12);" style-hover="filter:brightness(1.07);">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        {{ exportLabel }}
+      </button>
+    </div>
+  </header>
+
+  <div style="flex:1; display:flex; min-height:0;">
+
+    <!-- ============ SIDEPANEL: FILTRE ============ -->
+    <aside style="flex:none; width:288px; background:#fff; border-right:1px solid #e7eaee; overflow-y:auto; padding:22px 20px 40px;">
+
+      <div style="position:relative; margin-bottom:24px;">
+        <svgiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii style="position:absolute; left:12px; top:50%; transform:translateY(-50%); pointer-events:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9aa0a8" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input value="{{ search }}" onInput="{{ onSearch }}" placeholder="Søk i krav…" style="width:100%; padding:10px 12px 10px 36px; border:1px solid #dfe3e8; border-radius:10px; font-family:inherit; font-size:13.5px; color:#1f2430; outline:none;" style-focus="border-color:var(--accent,#4f46e5); box-shadow:0 0 0 3px var(--accent-soft,#eef2ff);">
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <div style="font-size:11px; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:#9aa0a8;">Filtre</div>
+        <button onClick="{{ clearFilters }}" style="cursor:pointer; border:none; background:none; color:var(--accent-ink,#4f46e5); font-family:inherit; font-size:12px; font-weight:600; padding:2px;" style-hover="text-decoration:underline;">Nullstill</button>
+      </div>
+
+      <!-- Kategori -->
+      <div style="margin-bottom:22px;">
+        <div style="font-size:13px; font-weight:700; color:#3b424c; margin-bottom:9px;">Kategori</div>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <sc-for list="{{ kategoriFacets }}" as="f" hint-placeholder-count="6">
+            <label onClick="{{ f.toggle }}" style="display:flex; align-items:center; gap:10px; padding:6px 6px; border-radius:8px; cursor:pointer;" style-hover="background:#f5f6f8;">
+              <span style="flex:none; width:18px; height:18px; border-radius:5px; border:1.5px solid {{ f.boxBorder }}; background:{{ f.boxBg }}; display:flex; align-items:center; justify-content:center;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:{{ f.checkOpacity }};"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span style="flex:1; font-size:13.5px; color:#3b424c; line-height:1.25;">{{ f.label }}</span>
+              <span style="flex:none; font-size:11.5px; color:#9aa0a8; font-weight:600;">{{ f.count }}</span>
+            </label>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- Relevant for -->
+      <div style="margin-bottom:22px;">
+        <div style="font-size:13px; font-weight:700; color:#3b424c; margin-bottom:9px;">Relevant for</div>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <sc-for list="{{ relevansFacets }}" as="f" hint-placeholder-count="4">
+            <label onClick="{{ f.toggle }}" style="display:flex; align-items:center; gap:10px; padding:6px 6px; border-radius:8px; cursor:pointer;" style-hover="background:#f5f6f8;">
+              <span style="flex:none; width:18px; height:18px; border-radius:5px; border:1.5px solid {{ f.boxBorder }}; background:{{ f.boxBg }}; display:flex; align-items:center; justify-content:center;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:{{ f.checkOpacity }};"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span style="flex:1; font-size:13.5px; color:#3b424c;">{{ f.label }}</span>
+              <span style="flex:none; font-size:11.5px; color:#9aa0a8; font-weight:600;">{{ f.count }}</span>
+            </label>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- Kravsett -->
+      <div>
+        <div style="font-size:13px; font-weight:700; color:#3b424c; margin-bottom:9px;">Kravsett</div>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <sc-for list="{{ kravsettFacets }}" as="f" hint-placeholder-count="5">
+            <label onClick="{{ f.toggle }}" style="display:flex; align-items:center; gap:10px; padding:6px 6px; border-radius:8px; cursor:pointer;" style-hover="background:#f5f6f8;">
+              <span style="flex:none; width:18px; height:18px; border-radius:5px; border:1.5px solid {{ f.boxBorder }}; background:{{ f.boxBg }}; display:flex; align-items:center; justify-content:center;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:{{ f.checkOpacity }};"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span style="flex:1; font-size:13.5px; color:#3b424c;">{{ f.label }}</span>
+              <span style="flex:none; font-size:11.5px; color:#9aa0a8; font-weight:600;">{{ f.count }}</span>
+            </label>
+          </sc-for>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ============ HOVEDOMRÅDE ============ -->
+    <main style="flex:1; display:flex; flex-direction:column; min-width:0;">
+
+      <!-- Verktøylinje -->
+      <div style="flex:none; display:flex; align-items:center; gap:16px; padding:14px 28px; background:rgba(245,246,248,.85); backdrop-filter:blur(6px); border-bottom:1px solid #e7eaee; z-index:10;">
+        <label onClick="{{ toggleSelectAll }}" style="display:flex; align-items:center; gap:9px; cursor:pointer; user-select:none;">
+          <span style="flex:none; width:18px; height:18px; border-radius:5px; border:1.5px solid {{ allBoxBorder }}; background:{{ allBoxBg }}; display:flex; align-items:center; justify-content:center;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:{{ allCheckOpacity }};"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+          <span style="font-size:13px; font-weight:600; color:#5a626c;">Velg alle synlige</span>
+        </label>
+
+        <span style="font-size:13px; color:#9aa0a8;">{{ visibleCount }} av {{ totalCount }} krav</span>
+
+        <div style="display:flex; align-items:center; gap:10px; margin-left:auto;">
+          <div style="display:flex; align-items:center; gap:7px;">
+            <span style="font-size:12.5px; color:#8a9099; font-weight:600;">Grupper</span>
+            <select value="{{ groupBy }}" onChange="{{ onGroupBy }}" style="font-family:inherit; font-size:13px; font-weight:600; color:#3b424c; padding:7px 28px 7px 11px; border:1px solid #dfe3e8; border-radius:9px; background:#fff url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 fill=%22none%22 stroke=%22%238a9099%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226 9 12 15 18 9%22/></svg>') no-repeat right 9px center; outline:none; cursor:pointer; appearance:none; -webkit-appearance:none;">
+              <option value="kravsett">Kravsett</option>
+              <option value="kategori">Kategori</option>
+              <option value="underkategori">Underkategori</option>
+              <option value="ingen">Ingen</option>
+            </select>
+          </div>
+          <div style="display:flex; align-items:center; gap:7px;">
+            <span style="font-size:12.5px; color:#8a9099; font-weight:600;">Sorter</span>
+            <select value="{{ sortBy }}" onChange="{{ onSortBy }}" style="font-family:inherit; font-size:13px; font-weight:600; color:#3b424c; padding:7px 28px 7px 11px; border:1px solid #dfe3e8; border-radius:9px; background:#fff url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 fill=%22none%22 stroke=%22%238a9099%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226 9 12 15 18 9%22/></svg>') no-repeat right 9px center; outline:none; cursor:pointer; appearance:none; -webkit-appearance:none;">
+              <option value="overskrift">Overskrift (A–Å)</option>
+              <option value="kategori">Kategori</option>
+              <option value="kravsett">Kravsett</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Innholdsfelt -->
+      <div style="flex:1; overflow-y:auto; padding:24px 28px 60px;">
+
+        <sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:80px 20px; color:#9aa0a8;">
+            <div style="width:30px; height:30px; border:3px solid #e3e6ea; border-top-color:var(--accent,#4f46e5); border-radius:50%; animation:kbspin .8s linear infinite;"></div>
+            <div style="font-size:14px; font-weight:500;">Laster kravbank…</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}">
+          <div style="max-width:520px; margin:48px auto; padding:22px 24px; border:1px solid #f3c9c2; background:#fdf0ec; border-radius:12px; color:#a13a28;">
+            <div style="font-weight:700; font-size:15px; margin-bottom:6px;">Kunne ikke laste kravbanken</div>
+            <div style="font-size:13.5px; line-height:1.5;">{{ errorMsg }}</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:80px 20px; color:#9aa0a8; text-align:center;">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#c6cbd2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <div style="font-size:15px; font-weight:600; color:#7a818b;">Ingen krav samsvarer med filtrene</div>
+            <div style="font-size:13.5px;">Prøv å justere søk eller filtre.</div>
+          </div>
+        </sc-if>
+
+        <sc-for list="{{ visibleGroups }}" as="group" hint-placeholder-count="2">
+          <div style="margin-bottom:30px;">
+            <sc-if value="{{ group.showLabel }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex; align-items:center; gap:11px; margin-bottom:13px; padding-bottom:9px; border-bottom:1px solid #e7eaee;">
+                <span style="width:7px; height:18px; border-radius:3px; background:var(--accent,#4f46e5);"></span>
+                <span style="font-size:14.5px; font-weight:700; letter-spacing:-.2px; color:#1f2430;">{{ group.label }}</span>
+                <span style="font-size:12px; font-weight:600; color:#9aa0a8; background:#eef0f3; padding:2px 9px; border-radius:20px;">{{ group.count }}</span>
+              </div>
+            </sc-if>
+
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <sc-for list="{{ group.items }}" as="k" hint-placeholder-count="4">
+                <div onClick="{{ k.toggle }}" style="position:relative; display:flex; gap:15px; background:#fff; border:1.5px solid {{ k.cardBorder }}; border-radius:14px; padding:18px 20px; cursor:pointer; transition:box-shadow .14s, border-color .14s; box-shadow:{{ k.cardShadow }};" style-hover="box-shadow:0 4px 16px rgba(25,35,60,.08);">
+
+                  <!-- avkrysning -->
+                  <span style="flex:none; margin-top:2px; width:20px; height:20px; border-radius:6px; border:1.5px solid {{ k.boxBorder }}; background:{{ k.boxBg }}; display:flex; align-items:center; justify-content:center;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:{{ k.checkOpacity }};"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </span>
+
+                  <div style="flex:1; min-width:0;">
+                    <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:7px;">
+                      <h3 style="margin:0; font-size:15.5px; font-weight:700; letter-spacing:-.2px; line-height:1.3; color:#1f2430; flex:1;">{{ k.overskrift }}</h3>
+                      <span style="flex:none; font-size:11px; font-weight:700; letter-spacing:.3px; color:var(--accent-ink,#3730a3); background:var(--accent-soft,#eef2ff); padding:4px 10px; border-radius:20px; white-space:nowrap;">{{ k.kravsett }}</span>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:6px; margin-bottom:10px; font-size:12px; font-weight:600; color:#8a9099;">
+                      <span>{{ k.kategori }}</span>
+                      <sc-if value="{{ k.hasUnder }}" hint-placeholder-val="{{ true }}">
+                        <span style="color:#c6cbd2;">›</span>
+                        <span>{{ k.underkategori }}</span>
+                      </sc-if>
+                    </div>
+
+                    <p style="margin:0 0 12px; font-size:14px; line-height:1.55; color:#3b424c; text-wrap:pretty;">{{ k.kravtekst }}</p>
+
+                    <sc-if value="{{ k.hasRefLink }}" hint-placeholder-val="{{ false }}">
+                      <a href="{{ k.refUrl }}" target="_blank" rel="noopener noreferrer" onClick="{{ k.openRef }}" style="display:inline-flex; align-items:center; gap:7px; margin-bottom:13px; padding:6px 12px; background:var(--accent-soft,#eef2ff); border:1px solid var(--accent-border,#c7d2fe); border-radius:7px; color:var(--accent-ink,#3730a3); font-size:12.5px; font-weight:700; text-decoration:none; max-width:100%;" style-hover="filter:brightness(.97); text-decoration:underline;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ k.refLabel }}</span>
+                      </a>
+                    </sc-if>
+
+                    <sc-if value="{{ k.hasRefText }}" hint-placeholder-val="{{ false }}">
+                      <span style="display:inline-flex; align-items:center; gap:7px; margin-bottom:13px; padding:6px 12px; background:var(--accent-soft,#eef2ff); border:1px solid var(--accent-border,#c7d2fe); border-radius:7px; color:var(--accent-ink,#3730a3); font-size:12.5px; font-weight:700; max-width:100%;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="13" y2="17"></line></svg>
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ k.refLabel }}</span>
+                      </span>
+                    </sc-if>
+
+                    <sc-if value="{{ k.hasRasjonale }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex; gap:9px; padding:10px 13px; background:#f7f8fa; border-radius:9px; margin-bottom:13px;">
+                        <span style="flex:none; font-size:10.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:#a3a9b2; margin-top:1px;">Rasjonale</span>
+                        <span style="font-size:13px; line-height:1.5; color:#5a626c; text-wrap:pretty;">{{ k.rasjonale }}</span>
+                      </div>
+                    </sc-if>
+
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                      <span style="font-size:11.5px; font-weight:600; color:#a3a9b2;">Relevant for</span>
+                      <sc-for list="{{ k.relevansList }}" as="r" hint-placeholder-count="3">
+                        <span style="font-size:11.5px; font-weight:700; color:{{ r.text }}; background:{{ r.bg }}; padding:3px 10px; border-radius:6px;">{{ r.label }}</span>
+                      </sc-for>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: &quot;100%&quot;, &quot;height&quot;: &quot;100%&quot; },
+  &quot;theme&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;indigo&quot;, &quot;teal&quot;, &quot;korall&quot;], &quot;default&quot;: &quot;indigo&quot;, &quot;tsType&quot;: &quot;string&quot; }
+}">
+class Component extends DCLogic {
+  state = {
+    loading: true,
+    hasError: false,
+    errorMsg: "",
+    krav: [],
+    search: "",
+    fKravsett: [],
+    fKategori: [],
+    fRelevans: [],
+    sortBy: "overskrift",
+    groupBy: "kravsett",
+    selected: {},
+  };
+
+  REL = [
+    { key: "onprem", label: "On-prem", text: "#475569", bg: "#eef2f6" },
+    { key: "iaas", label: "IaaS", text: "#1d4ed8", bg: "#eaf1fe" },
+    { key: "paas", label: "PaaS", text: "#6d28d9", bg: "#f2ecfd" },
+    { key: "saas", label: "SaaS", text: "#047857", bg: "#e7f7ef" },
+  ];
+
+  componentDidMount() {
+    this.load();
+  }
+
+  async load() {
+    try {
+      const mres = await fetch("krav/manifest.json", { cache: "no-store" });
+      if (!mres.ok) throw new Error("Fant ikke krav/manifest.json (status " + mres.status + ").");
+      const manifest = await mres.json();
+      const filer = (manifest.filer || []).filter(Boolean);
+      if (!filer.length) throw new Error("Manifestet inneholder ingen filer.");
+
+      const all = [];
+      for (const fil of filer) {
+        try {
+          const r = await fetch("krav/" + fil, { cache: "no-store" });
+          if (!r.ok) continue;
+          const txt = await r.text();
+          this.parseFile(txt, fil).forEach((k) => all.push(k));
+        } catch (e) { /* hopp over filer som feiler */ }
+      }
+      if (!all.length) throw new Error("Ingen krav kunne leses fra kravsett-filene.");
+      this.setState({ krav: all, loading: false });
+    } catch (e) {
+      this.setState({ loading: false, hasError: true, errorMsg: e.message || String(e) });
+    }
+  }
+
+  parseFile(text, filnavn) {
+    const lines = text.split(/\r?\n/);
+    let kravsett = filnavn.replace(/\.md$/i, "").replace(/[-_]/g, " ");
+    let headers = null;
+    const out = [];
+    const idx = {};
+
+    const truthy = (v) => /\b(x|✓|ja|yes|true|1)\b/i.test((v || "").trim()) || (v || "").trim() === "x";
+
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (!line) continue;
+      if (line.startsWith("#")) { kravsett = line.replace(/^#+/, "").trim() || kravsett; continue; }
+      if (!line.startsWith("|")) continue;
+
+      let inner = line;
+      if (inner.startsWith("|")) inner = inner.slice(1);
+      if (inner.endsWith("|")) inner = inner.slice(0, -1);
+      const cells = inner.split("|").map((c) => c.trim());
+
+      if (cells.every((c) => /^:?-{2,}:?$/.test(c) || c === "")) continue; // separator
+
+      if (!headers) {
+        headers = cells.map((h) => h.toLowerCase());
+        const find = (...names) => {
+          for (const n of names) {
+            const i = headers.findIndex((h) => h.replace(/[\s.\-_]/g, "").includes(n));
+            if (i !== -1) return i;
+          }
+          return -1;
+        };
+        idx.kategori = find("kategori");
+        // underkategori must be matched before kategori collision: search distinctly
+        idx.under = headers.findIndex((h) => h.replace(/[\s.\-_]/g, "").includes("underkategori"));
+        idx.overskrift = find("overskrift", "tittel");
+        idx.kravtekst = find("kravtekst", "krav", "beskrivelse");
+        idx.rasjonale = find("rasjonale", "begrunnelse");
+        idx.referanse = find("referanse", "referense", "kilde", "lenke", "hjemmel");
+        idx.onprem = headers.findIndex((h) => h.replace(/[\s.\-_]/g, "").includes("onprem"));
+        idx.iaas = headers.findIndex((h) => h.includes("iaas"));
+        idx.paas = headers.findIndex((h) => h.includes("paas"));
+        idx.saas = headers.findIndex((h) => h.includes("saas"));
+        // fix kategori if it accidentally grabbed underkategori
+        if (idx.kategori === idx.under) {
+          idx.kategori = headers.findIndex((h, i) => i !== idx.under && h.replace(/[\s.\-_]/g, "").includes("kategori"));
+        }
+        continue;
+      }
+
+      const g = (i) => (i >= 0 && i < cells.length ? cells[i] : "");
+      const kategori = g(idx.kategori) || "Uten kategori";
+      const overskrift = g(idx.overskrift);
+      const kravtekst = g(idx.kravtekst);
+      if (!overskrift && !kravtekst) continue;
+
+      const relevans = {
+        onprem: truthy(g(idx.onprem)),
+        iaas: truthy(g(idx.iaas)),
+        paas: truthy(g(idx.paas)),
+        saas: truthy(g(idx.saas)),
+      };
+      const relevansList = this.REL.filter((r) => relevans[r.key]).map((r) => ({ label: r.label, text: r.text, bg: r.bg }));
+      const ref = this.parseRef(g(idx.referanse));
+
+      out.push({
+        id: kravsett.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + out.length + "-" + (overskrift.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24)),
+        kravsett,
+        kategori,
+        underkategori: g(idx.under),
+        overskrift,
+        kravtekst,
+        rasjonale: g(idx.rasjonale),
+        referanse: ref.raw,
+        refLabel: ref.label,
+        refUrl: ref.url,
+        relevans,
+        relevansList,
+      });
+    }
+    return out;
+  }
+
+  parseRef(raw) {
+    raw = (raw || "").trim();
+    if (!raw) return { raw: "", label: "", url: "" };
+    // markdown-lenke: [tekst](url)
+    let m = raw.match(/^\[([^\]]+)\]\(\s*([^)\s]+)\s*\)$/);
+    if (m) return { raw: raw, label: m[1].trim(), url: m[2].trim() };
+    // bar URL
+    if (/^https?:\/\//i.test(raw)) {
+      let label = raw.replace(/^https?:\/\//i, "").replace(/\/$/, "");
+      if (label.length > 42) label = label.slice(0, 40) + "…";
+      return { raw: raw, label: label, url: raw };
+    }
+    // ren tekstreferanse
+    return { raw: raw, label: raw, url: "" };
+  }
+
+  // ---------- handlers ----------
+  toggleArr(field, value) {
+    this.setState((s) => {
+      const arr = s[field].slice();
+      const i = arr.indexOf(value);
+      if (i === -1) arr.push(value); else arr.splice(i, 1);
+      return { [field]: arr };
+    });
+  }
+  clearFilters = () => this.setState({ search: "", fKravsett: [], fKategori: [], fRelevans: [] });
+  clearSelection = () => this.setState({ selected: {} });
+  toggleSelect(id) {
+    this.setState((s) => {
+      const sel = Object.assign({}, s.selected);
+      if (sel[id]) delete sel[id]; else sel[id] = true;
+      return { selected: sel };
+    });
+  }
+
+  // ---------- pipeline ----------
+  filtered() {
+    const s = this.state;
+    const q = s.search.trim().toLowerCase();
+    return s.krav.filter((k) => {
+      if (q) {
+        const hay = (k.overskrift + " " + k.kravtekst + " " + k.kategori + " " + k.underkategori + " " + k.rasjonale + " " + k.kravsett).toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      if (s.fKravsett.length && !s.fKravsett.includes(k.kravsett)) return false;
+      if (s.fKategori.length && !s.fKategori.includes(k.kategori)) return false;
+      if (s.fRelevans.length && !s.fRelevans.some((key) => k.relevans[key])) return false;
+      return true;
+    });
+  }
+
+  sortList(list) {
+    const by = this.state.sortBy;
+    const c = new Intl.Collator("nb");
+    const arr = list.slice();
+    arr.sort((a, b) => {
+      if (by === "kravsett") return c.compare(a.kravsett, b.kravsett) || c.compare(a.kategori, b.kategori) || c.compare(a.overskrift, b.overskrift);
+      if (by === "kategori") return c.compare(a.kategori, b.kategori) || c.compare(a.underkategori, b.underkategori) || c.compare(a.overskrift, b.overskrift);
+      return c.compare(a.overskrift, b.overskrift);
+    });
+    return arr;
+  }
+
+  csvEscape(v) {
+    const s = (v == null ? "" : String(v));
+    if (/[;"\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+
+  exportCsv = () => {
+    const sel = this.state.selected;
+    const selIds = Object.keys(sel);
+    let rows = this.sortList(this.filtered());
+    if (selIds.length) rows = rows.filter((k) => sel[k.id]);
+    if (!rows.length) return;
+    const headers = ["Kravsett", "Kategori", "Underkategori", "Overskrift", "Kravtekst", "Rasjonale", "Referanse", "Referanse-lenke", "Relevant for"];
+    const lines = [headers.join(";")];
+    rows.forEach((k) => {
+      const rel = this.REL.filter((r) => k.relevans[r.key]).map((r) => r.label).join(", ");
+      lines.push([k.kravsett, k.kategori, k.underkategori, k.overskrift, k.kravtekst, k.rasjonale, (k.refLabel || ""), (k.refUrl || ""), rel].map((c) => this.csvEscape(c)).join(";"));
+    });
+    const csv = "\uFEFF" + lines.join("\r\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const d = new Date();
+    const stamp = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    a.href = url;
+    a.download = "kravbank-utvalg-" + stamp + ".csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  facet(field, value, label, count) {
+    const active = this.state[field].includes(value);
+    return {
+      value, label, count,
+      active,
+      boxBg: active ? "var(--accent,#4f46e5)" : "#fff",
+      boxBorder: active ? "var(--accent,#4f46e5)" : "#cbd0d7",
+      checkOpacity: active ? 1 : 0,
+      toggle: () => this.toggleArr(field, value),
+    };
+  }
+
+  themeTokens() {
+    const t = (this.props.theme || "indigo").toLowerCase();
+    const map = {
+      indigo: { accent: "#4f46e5", accentSoft: "#eef2ff", accentBorder: "#c7d2fe", accentInk: "#3730a3" },
+      teal: { accent: "#0d9488", accentSoft: "#effdf9", accentBorder: "#99f6e4", accentInk: "#0f766e" },
+      korall: { accent: "#e1543d", accentSoft: "#fdf0ec", accentBorder: "#f6c8bd", accentInk: "#b23a26" },
+    };
+    return map[t] || map.indigo;
+  }
+
+  renderVals() {
+    const s = this.state;
+    const tk = this.themeTokens();
+
+    const filtered = this.filtered();
+    const sorted = this.sortList(filtered);
+
+    // facets (counts from full dataset)
+    const all = s.krav;
+    const countKravsett = {}, countKategori = {}, countRel = { onprem: 0, iaas: 0, paas: 0, saas: 0 };
+    all.forEach((k) => {
+      countKravsett[k.kravsett] = (countKravsett[k.kravsett] || 0) + 1;
+      countKategori[k.kategori] = (countKategori[k.kategori] || 0) + 1;
+      this.REL.forEach((r) => { if (k.relevans[r.key]) countRel[r.key]++; });
+    });
+    const col = new Intl.Collator("nb");
+    const kravsettFacets = Object.keys(countKravsett).sort(col.compare).map((v) => this.facet("fKravsett", v, v, countKravsett[v]));
+    const kategoriFacets = Object.keys(countKategori).sort(col.compare).map((v) => this.facet("fKategori", v, v, countKategori[v]));
+    const relevansFacets = this.REL.map((r) => this.facet("fRelevans", r.key, r.label, countRel[r.key]));
+
+    // selection decorate + grouping
+    const decorate = (k) => {
+      const selected = !!s.selected[k.id];
+      return Object.assign({}, k, {
+        selected,
+        hasUnder: !!(k.underkategori && k.underkategori.trim()),
+        hasRasjonale: !!(k.rasjonale && k.rasjonale.trim()),
+        hasRefLink: !!(k.refUrl && k.refUrl.trim()),
+        hasRefText: !!(k.refLabel && k.refLabel.trim() && !(k.refUrl && k.refUrl.trim())),
+        openRef: (e) => { e.stopPropagation(); },
+        boxBg: selected ? "var(--accent,#4f46e5)" : "#fff",
+        boxBorder: selected ? "var(--accent,#4f46e5)" : "#cbd0d7",
+        checkOpacity: selected ? 1 : 0,
+        cardBorder: selected ? "var(--accent-border,#c7d2fe)" : "#e7eaee",
+        cardShadow: selected ? "0 2px 10px rgba(79,70,229,.10)" : "0 1px 2px rgba(25,35,60,.04)",
+        toggle: () => this.toggleSelect(k.id),
+      });
+    };
+
+    let visibleGroups = [];
+    if (s.groupBy === "ingen") {
+      visibleGroups = [{ key: "all", showLabel: false, label: "", count: sorted.length, items: sorted.map(decorate) }];
+    } else {
+      const keyOf = (k) => s.groupBy === "kravsett" ? k.kravsett : (s.groupBy === "kategori" ? k.kategori : (k.underkategori || "Uten underkategori"));
+      const groups = {};
+      const order = [];
+      sorted.forEach((k) => {
+        const key = keyOf(k);
+        if (!groups[key]) { groups[key] = []; order.push(key); }
+        groups[key].push(k);
+      });
+      order.sort(col.compare);
+      visibleGroups = order.map((key) => ({ key, showLabel: true, label: key, count: groups[key].length, items: groups[key].map(decorate) }));
+    }
+
+    const selectedCount = Object.keys(s.selected).length;
+    const visibleIds = sorted.map((k) => k.id);
+    const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => s.selected[id]);
+    const exportN = selectedCount > 0 ? selectedCount : sorted.length;
+
+    return {
+      // theme
+      accent: tk.accent, accentSoft: tk.accentSoft, accentBorder: tk.accentBorder, accentInk: tk.accentInk,
+      // state passthrough
+      loading: s.loading,
+      hasError: s.hasError,
+      errorMsg: s.errorMsg,
+      search: s.search,
+      sortBy: s.sortBy,
+      groupBy: s.groupBy,
+      // derived
+      totalCount: all.length,
+      visibleCount: sorted.length,
+      selectedCount,
+      showEmpty: !s.loading && !s.hasError && all.length > 0 && sorted.length === 0,
+      exportLabel: selectedCount > 0 ? ("Eksporter " + selectedCount) : "Eksporter alle",
+      kravsettFacets, kategoriFacets, relevansFacets,
+      visibleGroups,
+      // select-all box
+      allBoxBg: allVisibleSelected ? "var(--accent,#4f46e5)" : "#fff",
+      allBoxBorder: allVisibleSelected ? "var(--accent,#4f46e5)" : "#cbd0d7",
+      allCheckOpacity: allVisibleSelected ? 1 : 0,
+      // handlers
+      onSearch: (e) => this.setState({ search: e.target.value }),
+      onSortBy: (e) => this.setState({ sortBy: e.target.value }),
+      onGroupBy: (e) => this.setState({ groupBy: e.target.value }),
+      clearFilters: this.clearFilters,
+      clearSelection: this.clearSelection,
+      exportCsv: this.exportCsv,
+      toggleSelectAll: () => {
+        this.setState((st) => {
+          const ids = sorted.map((k) => k.id);
+          const everyOn = ids.length > 0 && ids.every((id) => st.selected[id]);
+          const sel = Object.assign({}, st.selected);
+          if (everyOn) ids.forEach((id) => delete sel[id]);
+          else ids.forEach((id) => { sel[id] = true; });
+          return { selected: sel };
+        });
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

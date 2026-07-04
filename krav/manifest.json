@@ -1,0 +1,10 @@
+{
+  "_kommentar": "Liste over kravsett-filer som lastes automatisk ved oppstart. Legg til nye .md-filer her for å utvide kravbanken.",
+  "filer": [
+    "informasjonssikkerhet.md",
+    "personvern.md",
+    "universell-utforming.md",
+    "drift-og-forvaltning.md",
+    "arkitektur-og-integrasjon.md"
+  ]
+}
