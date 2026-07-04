@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 // Serve the main page (double-extension filename handled here)
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Serve all static assets (JS, markdown files, images, etc.)

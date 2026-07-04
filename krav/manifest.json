@@ -1,10 +1,12 @@
 {
-  "_kommentar": "Liste over kravsett-filer som lastes automatisk ved oppstart. Legg til nye .md-filer her for å utvide kravbanken.",
+  "_kommentar": "Én markdown-fil per KATEGORI. Filens overskrift (# ...) styrer kategorinavnet. Hvert krav kan merkes med ett eller flere KRAVSETT (komma-separert i Kravsett-kolonnen) — et kravsett er en tverrgående samling krav på tvers av kategorier. Legg til nye kategorifiler her.",
   "filer": [
     "informasjonssikkerhet.md",
     "personvern.md",
     "universell-utforming.md",
-    "drift-og-forvaltning.md",
-    "arkitektur-og-integrasjon.md"
+    "drift.md",
+    "forvaltning.md",
+    "arkitektur.md",
+    "integrasjon.md"
   ]
 }

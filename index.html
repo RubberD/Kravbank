@@ -27,7 +27,7 @@
   <!-- ============ TOPPLINJE ============ -->
   <header style="flex:none; display:flex; align-items:center; gap:20px; padding:16px 28px; background:#ffffff; border-bottom:1px solid #e7eaee; z-index:20;">
     <div style="display:flex; align-items:center; gap:13px; min-width:0;">
-      <div style="flex:none; width:38px; height:38px; border-radius:10px; background:var(--accent,#4f46e5); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:18px; letter-spacing:-.5px;">K</div>
+      <div style="flex:none; width:38px; height:38px; border-radius:10px; background:#f3f4f6; border:1px solid #e7eaee; display:flex; align-items:center; justify-content:center; padding:6px;"><img src="assets/logo-shield.png" alt="Logo" style="width:100%; height:100%; object-fit:contain; display:block;"></div>
       <div style="min-width:0;">
         <div style="font-size:18px; font-weight:700; letter-spacing:-.3px; line-height:1.1;">IKT-kravbank</div>
         <div style="font-size:12.5px; color:#8a9099; line-height:1.3;">Krav for anskaffelse av digitale tjenester</div>
@@ -57,7 +57,7 @@
     <aside style="flex:none; width:288px; background:#fff; border-right:1px solid #e7eaee; overflow-y:auto; padding:22px 20px 40px;">
 
       <div style="position:relative; margin-bottom:24px;">
-        <svgiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii style="position:absolute; left:12px; top:50%; transform:translateY(-50%); pointer-events:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9aa0a8" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <svg style="position:absolute; left:12px; top:50%; transform:translateY(-50%); pointer-events:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9aa0a8" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input value="{{ search }}" onInput="{{ onSearch }}" placeholder="Søk i krav…" style="width:100%; padding:10px 12px 10px 36px; border:1px solid #dfe3e8; border-radius:10px; font-family:inherit; font-size:13.5px; color:#1f2430; outline:none;" style-focus="border-color:var(--accent,#4f46e5); box-shadow:0 0 0 3px var(--accent-soft,#eef2ff);">
       </div>
 
@@ -133,9 +133,9 @@
           <div style="display:flex; align-items:center; gap:7px;">
             <span style="font-size:12.5px; color:#8a9099; font-weight:600;">Grupper</span>
             <select value="{{ groupBy }}" onChange="{{ onGroupBy }}" style="font-family:inherit; font-size:13px; font-weight:600; color:#3b424c; padding:7px 28px 7px 11px; border:1px solid #dfe3e8; border-radius:9px; background:#fff url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 fill=%22none%22 stroke=%22%238a9099%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226 9 12 15 18 9%22/></svg>') no-repeat right 9px center; outline:none; cursor:pointer; appearance:none; -webkit-appearance:none;">
-              <option value="kravsett">Kravsett</option>
               <option value="kategori">Kategori</option>
               <option value="underkategori">Underkategori</option>
+              <option value="kravsett">Kravsett</option>
               <option value="ingen">Ingen</option>
             </select>
           </div>
@@ -197,16 +197,15 @@
                   <div style="flex:1; min-width:0;">
                     <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:7px;">
                       <h3 style="margin:0; font-size:15.5px; font-weight:700; letter-spacing:-.2px; line-height:1.3; color:#1f2430; flex:1;">{{ k.overskrift }}</h3>
-                      <span style="flex:none; font-size:11px; font-weight:700; letter-spacing:.3px; color:var(--accent-ink,#3730a3); background:var(--accent-soft,#eef2ff); padding:4px 10px; border-radius:20px; white-space:nowrap;">{{ k.kravsett }}</span>
+                      <span style="flex:none; font-size:11px; font-weight:700; letter-spacing:.3px; color:var(--accent-ink,#3730a3); background:var(--accent-soft,#eef2ff); padding:4px 10px; border-radius:20px; white-space:nowrap;">{{ k.kategori }}</span>
                     </div>
 
-                    <div style="display:flex; align-items:center; gap:6px; margin-bottom:10px; font-size:12px; font-weight:600; color:#8a9099;">
-                      <span>{{ k.kategori }}</span>
-                      <sc-if value="{{ k.hasUnder }}" hint-placeholder-val="{{ true }}">
-                        <span style="color:#c6cbd2;">›</span>
+                    <sc-if value="{{ k.hasUnder }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:10px; font-size:12px; font-weight:600; color:#8a9099;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.6;"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
                         <span>{{ k.underkategori }}</span>
-                      </sc-if>
-                    </div>
+                      </div>
+                    </sc-if>
 
                     <p style="margin:0 0 12px; font-size:14px; line-height:1.55; color:#3b424c; text-wrap:pretty;">{{ k.kravtekst }}</p>
 
@@ -231,12 +230,24 @@
                       </div>
                     </sc-if>
 
-                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:{{ k.relevansMargin }};">
                       <span style="font-size:11.5px; font-weight:600; color:#a3a9b2;">Relevant for</span>
                       <sc-for list="{{ k.relevansList }}" as="r" hint-placeholder-count="3">
                         <span style="font-size:11.5px; font-weight:700; color:{{ r.text }}; background:{{ r.bg }}; padding:3px 10px; border-radius:6px;">{{ r.label }}</span>
                       </sc-for>
                     </div>
+
+                    <sc-if value="{{ k.hasKravsett }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                        <span style="font-size:11.5px; font-weight:600; color:#a3a9b2;">Kravsett</span>
+                        <sc-for list="{{ k.kravsettList }}" as="ks" hint-placeholder-count="1">
+                          <span style="display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:700; color:#5a626c; background:#f0f1f4; border:1px solid #e2e5ea; padding:3px 10px; border-radius:20px;">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.7;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                            {{ ks }}
+                          </span>
+                        </sc-for>
+                      </div>
+                    </sc-if>
                   </div>
                 </div>
               </sc-for>
@@ -264,7 +275,7 @@ class Component extends DCLogic {
     fKategori: [],
     fRelevans: [],
     sortBy: "overskrift",
-    groupBy: "kravsett",
+    groupBy: "kategori",
     selected: {},
   };
 
@@ -305,7 +316,8 @@ class Component extends DCLogic {
 
   parseFile(text, filnavn) {
     const lines = text.split(/\r?\n/);
-    let kravsett = filnavn.replace(/\.md$/i, "").replace(/[-_]/g, " ");
+    // Filens overskrift (# ...) styrer KATEGORIEN. Fallback: filnavnet.
+    let kategori = filnavn.replace(/\.md$/i, "").replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
     let headers = null;
     const out = [];
     const idx = {};
@@ -315,7 +327,7 @@ class Component extends DCLogic {
     for (const raw of lines) {
       const line = raw.trim();
       if (!line) continue;
-      if (line.startsWith("#")) { kravsett = line.replace(/^#+/, "").trim() || kravsett; continue; }
+      if (line.startsWith("#")) { kategori = line.replace(/^#+/, "").trim() || kategori; continue; }
       if (!line.startsWith("|")) continue;
 
       let inner = line;
@@ -334,26 +346,20 @@ class Component extends DCLogic {
           }
           return -1;
         };
-        idx.kategori = find("kategori");
-        // underkategori must be matched before kategori collision: search distinctly
         idx.under = headers.findIndex((h) => h.replace(/[\s.\-_]/g, "").includes("underkategori"));
         idx.overskrift = find("overskrift", "tittel");
-        idx.kravtekst = find("kravtekst", "krav", "beskrivelse");
+        idx.kravtekst = find("kravtekst", "beskrivelse");
         idx.rasjonale = find("rasjonale", "begrunnelse");
-        idx.referanse = find("referanse", "referense", "kilde", "lenke", "hjemmel");
+        idx.referanse = find("referanse", "referense", "kilde", "hjemmel");
+        idx.kravsett = headers.findIndex((h) => h.replace(/[\s.\-_]/g, "").includes("kravsett"));
         idx.onprem = headers.findIndex((h) => h.replace(/[\s.\-_]/g, "").includes("onprem"));
         idx.iaas = headers.findIndex((h) => h.includes("iaas"));
         idx.paas = headers.findIndex((h) => h.includes("paas"));
         idx.saas = headers.findIndex((h) => h.includes("saas"));
-        // fix kategori if it accidentally grabbed underkategori
-        if (idx.kategori === idx.under) {
-          idx.kategori = headers.findIndex((h, i) => i !== idx.under && h.replace(/[\s.\-_]/g, "").includes("kategori"));
-        }
         continue;
       }
 
       const g = (i) => (i >= 0 && i < cells.length ? cells[i] : "");
-      const kategori = g(idx.kategori) || "Uten kategori";
       const overskrift = g(idx.overskrift);
       const kravtekst = g(idx.kravtekst);
       if (!overskrift && !kravtekst) continue;
@@ -366,11 +372,13 @@ class Component extends DCLogic {
       };
       const relevansList = this.REL.filter((r) => relevans[r.key]).map((r) => ({ label: r.label, text: r.text, bg: r.bg }));
       const ref = this.parseRef(g(idx.referanse));
+      const kravsettList = g(idx.kravsett).split(/\s*,\s*/).map((x) => x.trim()).filter(Boolean);
 
       out.push({
-        id: kravsett.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + out.length + "-" + (overskrift.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24)),
-        kravsett,
+        id: kategori.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + out.length + "-" + (overskrift.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24)),
         kategori,
+        kravsettList,
+        kravsettStr: kravsettList.join(", "),
         underkategori: g(idx.under),
         overskrift,
         kravtekst,
@@ -426,10 +434,10 @@ class Component extends DCLogic {
     const q = s.search.trim().toLowerCase();
     return s.krav.filter((k) => {
       if (q) {
-        const hay = (k.overskrift + " " + k.kravtekst + " " + k.kategori + " " + k.underkategori + " " + k.rasjonale + " " + k.kravsett).toLowerCase();
+        const hay = (k.overskrift + " " + k.kravtekst + " " + k.kategori + " " + k.underkategori + " " + k.rasjonale + " " + k.kravsettStr).toLowerCase();
         if (!hay.includes(q)) return false;
       }
-      if (s.fKravsett.length && !s.fKravsett.includes(k.kravsett)) return false;
+      if (s.fKravsett.length && !k.kravsettList.some((x) => s.fKravsett.includes(x))) return false;
       if (s.fKategori.length && !s.fKategori.includes(k.kategori)) return false;
       if (s.fRelevans.length && !s.fRelevans.some((key) => k.relevans[key])) return false;
       return true;
@@ -441,7 +449,7 @@ class Component extends DCLogic {
     const c = new Intl.Collator("nb");
     const arr = list.slice();
     arr.sort((a, b) => {
-      if (by === "kravsett") return c.compare(a.kravsett, b.kravsett) || c.compare(a.kategori, b.kategori) || c.compare(a.overskrift, b.overskrift);
+      if (by === "kravsett") return c.compare(a.kravsettStr, b.kravsettStr) || c.compare(a.kategori, b.kategori) || c.compare(a.overskrift, b.overskrift);
       if (by === "kategori") return c.compare(a.kategori, b.kategori) || c.compare(a.underkategori, b.underkategori) || c.compare(a.overskrift, b.overskrift);
       return c.compare(a.overskrift, b.overskrift);
     });
@@ -460,11 +468,11 @@ class Component extends DCLogic {
     let rows = this.sortList(this.filtered());
     if (selIds.length) rows = rows.filter((k) => sel[k.id]);
     if (!rows.length) return;
-    const headers = ["Kravsett", "Kategori", "Underkategori", "Overskrift", "Kravtekst", "Rasjonale", "Referanse", "Referanse-lenke", "Relevant for"];
+    const headers = ["Kategori", "Underkategori", "Overskrift", "Kravtekst", "Rasjonale", "Referanse", "Referanse-lenke", "Kravsett", "Relevant for"];
     const lines = [headers.join(";")];
     rows.forEach((k) => {
       const rel = this.REL.filter((r) => k.relevans[r.key]).map((r) => r.label).join(", ");
-      lines.push([k.kravsett, k.kategori, k.underkategori, k.overskrift, k.kravtekst, k.rasjonale, (k.refLabel || ""), (k.refUrl || ""), rel].map((c) => this.csvEscape(c)).join(";"));
+      lines.push([k.kategori, k.underkategori, k.overskrift, k.kravtekst, k.rasjonale, (k.refLabel || ""), (k.refUrl || ""), k.kravsettStr, rel].map((c) => this.csvEscape(c)).join(";"));
     });
     const csv = "\uFEFF" + lines.join("\r\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -513,7 +521,7 @@ class Component extends DCLogic {
     const all = s.krav;
     const countKravsett = {}, countKategori = {}, countRel = { onprem: 0, iaas: 0, paas: 0, saas: 0 };
     all.forEach((k) => {
-      countKravsett[k.kravsett] = (countKravsett[k.kravsett] || 0) + 1;
+      k.kravsettList.forEach((v) => { countKravsett[v] = (countKravsett[v] || 0) + 1; });
       countKategori[k.kategori] = (countKategori[k.kategori] || 0) + 1;
       this.REL.forEach((r) => { if (k.relevans[r.key]) countRel[r.key]++; });
     });
@@ -528,6 +536,8 @@ class Component extends DCLogic {
       return Object.assign({}, k, {
         selected,
         hasUnder: !!(k.underkategori && k.underkategori.trim()),
+        hasKravsett: k.kravsettList.length > 0,
+        relevansMargin: k.kravsettList.length > 0 ? "11px" : "0",
         hasRasjonale: !!(k.rasjonale && k.rasjonale.trim()),
         hasRefLink: !!(k.refUrl && k.refUrl.trim()),
         hasRefText: !!(k.refLabel && k.refLabel.trim() && !(k.refUrl && k.refUrl.trim())),
@@ -545,15 +555,28 @@ class Component extends DCLogic {
     if (s.groupBy === "ingen") {
       visibleGroups = [{ key: "all", showLabel: false, label: "", count: sorted.length, items: sorted.map(decorate) }];
     } else {
-      const keyOf = (k) => s.groupBy === "kravsett" ? k.kravsett : (s.groupBy === "kategori" ? k.kategori : (k.underkategori || "Uten underkategori"));
       const groups = {};
       const order = [];
-      sorted.forEach((k) => {
-        const key = keyOf(k);
+      const push = (key, k) => {
         if (!groups[key]) { groups[key] = []; order.push(key); }
         groups[key].push(k);
+      };
+      sorted.forEach((k) => {
+        if (s.groupBy === "kravsett") {
+          // et krav kan tilhøre flere kravsett -> vises i hver gruppe
+          if (k.kravsettList.length) k.kravsettList.forEach((v) => push(v, k));
+          else push("Uten kravsett", k);
+        } else if (s.groupBy === "kategori") {
+          push(k.kategori, k);
+        } else {
+          push(k.underkategori || "Uten underkategori", k);
+        }
       });
-      order.sort(col.compare);
+      order.sort((a, b) => {
+        if (a === "Uten kravsett") return 1;
+        if (b === "Uten kravsett") return -1;
+        return col.compare(a, b);
+      });
       visibleGroups = order.map((key) => ({ key, showLabel: true, label: key, count: groups[key].length, items: groups[key].map(decorate) }));
     }
 
