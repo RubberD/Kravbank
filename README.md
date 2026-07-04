@@ -9,3 +9,17 @@ Bruker man Git vil man få versjonsstyring på oppdatering av kravene.
 
 # Hvorfor? #
 Jeg har jobbet med offentlig anskaffelse i 9 år og har sett mange spennende forsøk på å lage kravbanker i alt fra programvare for prosjektstyring til sharepoint, business intellgence og kjøp av avanserte verktøyer. Personlig tror jeg ikke det trenger å være så vanskelig. Litt HTML, Git og Claude kommer man lang vei med.
+
+# Screenshot
+
+[![Bilde av applikasjonen](https://raw.githubusercontent.com/RubberD/Kravbank/refs/heads/main/assets/screenshot.png?token=GHSAT0AAAAAAEBVX3NRL7IH47TKRP6LZETO2SJD2YA)]
+
+
+# Kjøre applikasjonen #
+
+## Docker fra hub ##
+
+## Clon repo ##
+
+
+
