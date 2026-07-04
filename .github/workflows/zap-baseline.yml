@@ -1,0 +1,30 @@
+name: ZAP baseline scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 1' # ukentlig, mandag 06:00 UTC
+
+jobs:
+  zap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t kravbank:zap .
+      - name: Run app
+        run: docker run -d -p 3000:3000 --name kravbank-app kravbank:zap
+      - name: Wait for app to be ready
+        run: |
+          for i in $(seq 1 15); do
+            curl -sf http://localhost:3000 && exit 0
+            sleep 2
+          done
+          echo "App never became ready" && exit 1
+      - name: ZAP baseline scan
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: 'http://localhost:3000'
+          fail_action: false
