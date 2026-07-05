@@ -11,8 +11,10 @@ app.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ["'self'"],
     styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://unpkg.com"],
-    scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://unpkg.com"],
+    scriptSrc: ["'self'", "unsafe-inline'", "'unsafe-eval'", "https://unpkg.com"],
+    "frame-ancestors": ["'none'"],  
   },
+  xFrameOptions: { action: "deny" },
 }));
 
 // Definer regler for rate limiting
