@@ -1,5 +1,8 @@
 name: ZAP baseline scan
-
+permissions:
+  contents: read
+  issues: write
+  
 on:
   push:
     branches: [main]
