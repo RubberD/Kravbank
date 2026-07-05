@@ -17,11 +17,11 @@ app.use(limiter);
 
 // Serve the main page (double-extension filename handled here)
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
 // Serve all static assets (JS, markdown files, images, etc.)
-app.use(express.static(__dirname));
+app.use(express.static('public'));
 
 app.listen(PORT, () => {
   console.log(`Kravbank running on http://localhost:${PORT}`);
