@@ -1,5 +1,6 @@
 FROM node:24-alpine
 
+
 WORKDIR /app
 
 # Oppgrader npm for å fjerne sårbar bundlet tar-versjon (CVE-2026-53655)
@@ -13,5 +14,8 @@ RUN npm install --omit=dev
 COPY . .
 
 EXPOSE 3000
+
+RUN adduser -D myuser
+USER myuser
 
 CMD ["node", "server.js"]
