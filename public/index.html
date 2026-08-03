@@ -99,10 +99,42 @@
       </div>
 
       <!-- Kravsett -->
-      <div>
+      <div style="margin-bottom:22px;">
         <div style="font-size:13px; font-weight:700; color:#3b424c; margin-bottom:9px;">Kravsett</div>
         <div style="display:flex; flex-direction:column; gap:2px;">
           <sc-for list="{{ kravsettFacets }}" as="f" hint-placeholder-count="5">
+            <label onClick="{{ f.toggle }}" style="display:flex; align-items:center; gap:10px; padding:6px 6px; border-radius:8px; cursor:pointer;" style-hover="background:#f5f6f8;">
+              <span style="flex:none; width:18px; height:18px; border-radius:5px; border:1.5px solid {{ f.boxBorder }}; background:{{ f.boxBg }}; display:flex; align-items:center; justify-content:center;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:{{ f.checkOpacity }};"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span style="flex:1; font-size:13.5px; color:#3b424c;">{{ f.label }}</span>
+              <span style="flex:none; font-size:11.5px; color:#9aa0a8; font-weight:600;">{{ f.count }}</span>
+            </label>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- Vektning -->
+      <div style="margin-bottom:22px;">
+        <div style="font-size:13px; font-weight:700; color:#3b424c; margin-bottom:9px;">Vektning</div>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <sc-for list="{{ vektningFacets }}" as="f" hint-placeholder-count="3">
+            <label onClick="{{ f.toggle }}" style="display:flex; align-items:center; gap:10px; padding:6px 6px; border-radius:8px; cursor:pointer;" style-hover="background:#f5f6f8;">
+              <span style="flex:none; width:18px; height:18px; border-radius:5px; border:1.5px solid {{ f.boxBorder }}; background:{{ f.boxBg }}; display:flex; align-items:center; justify-content:center;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:{{ f.checkOpacity }};"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span style="flex:1; font-size:13.5px; color:#3b424c;">{{ f.label }}</span>
+              <span style="flex:none; font-size:11.5px; color:#9aa0a8; font-weight:600;">{{ f.count }}</span>
+            </label>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- Prioritet -->
+      <div>
+        <div style="font-size:13px; font-weight:700; color:#3b424c; margin-bottom:9px;">Prioritet</div>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <sc-for list="{{ prioritetFacets }}" as="f" hint-placeholder-count="3">
             <label onClick="{{ f.toggle }}" style="display:flex; align-items:center; gap:10px; padding:6px 6px; border-radius:8px; cursor:pointer;" style-hover="background:#f5f6f8;">
               <span style="flex:none; width:18px; height:18px; border-radius:5px; border:1.5px solid {{ f.boxBorder }}; background:{{ f.boxBg }}; display:flex; align-items:center; justify-content:center;">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:{{ f.checkOpacity }};"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -197,6 +229,12 @@
                   <div style="flex:1; min-width:0;">
                     <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:7px;">
                       <h3 style="margin:0; font-size:15.5px; font-weight:700; letter-spacing:-.2px; line-height:1.3; color:#1f2430; flex:1;">{{ k.overskrift }}</h3>
+                      <sc-if value="{{ k.hasVektning }}" hint-placeholder-val="{{ false }}">
+                        <span style="flex:none; font-size:11px; font-weight:700; letter-spacing:.3px; color:{{ k.vektColor }}; background:{{ k.vektBg }}; padding:4px 10px; border-radius:20px; white-space:nowrap;">{{ k.vektning }}</span>
+                      </sc-if>
+                      <sc-if value="{{ k.hasPrioritet }}" hint-placeholder-val="{{ false }}">
+                        <span style="flex:none; font-size:11px; font-weight:700; color:#5a626c; background:#f0f1f4; border:1px solid #e2e5ea; padding:4px 10px; border-radius:20px; white-space:nowrap;">P{{ k.prioritet }}</span>
+                      </sc-if>
                       <span style="flex:none; font-size:11px; font-weight:700; letter-spacing:.3px; color:var(--accent-ink,#3730a3); background:var(--accent-soft,#eef2ff); padding:4px 10px; border-radius:20px; white-space:nowrap;">{{ k.kategori }}</span>
                     </div>
 
@@ -274,6 +312,8 @@ class Component extends DCLogic {
     fKravsett: [],
     fKategori: [],
     fRelevans: [],
+    fVektning: [],
+    fPrioritet: [],
     sortBy: "overskrift",
     groupBy: "kategori",
     selected: {},
@@ -352,6 +392,8 @@ class Component extends DCLogic {
         idx.rasjonale = find("rasjonale", "begrunnelse");
         idx.referanse = find("referanse", "referense", "kilde", "hjemmel");
         idx.kravsett = headers.findIndex((h) => h.replace(/[\s.\-_]/g, "").includes("kravsett"));
+        idx.vekt = headers.findIndex((h) => h.replace(/[\s.\-_]/g, "").includes("vektning"));
+        idx.pri = headers.findIndex((h) => h.replace(/[\s.\-_]/g, "").includes("prioritet"));
         idx.onprem = headers.findIndex((h) => h.replace(/[\s.\-_]/g, "").includes("onprem"));
         idx.iaas = headers.findIndex((h) => h.includes("iaas"));
         idx.paas = headers.findIndex((h) => h.includes("paas"));
@@ -373,6 +415,8 @@ class Component extends DCLogic {
       const relevansList = this.REL.filter((r) => relevans[r.key]).map((r) => ({ label: r.label, text: r.text, bg: r.bg }));
       const ref = this.parseRef(g(idx.referanse));
       const kravsettList = g(idx.kravsett).split(/\s*,\s*/).map((x) => x.trim()).filter(Boolean);
+      const vektning = (g(idx.vekt) || "").trim();
+      const prioritet = (g(idx.pri) || "").trim();
 
       out.push({
         id: kategori.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + out.length + "-" + (overskrift.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24)),
@@ -386,6 +430,8 @@ class Component extends DCLogic {
         referanse: ref.raw,
         refLabel: ref.label,
         refUrl: ref.url,
+        vektning,
+        prioritet,
         relevans,
         relevansList,
       });
@@ -418,7 +464,7 @@ class Component extends DCLogic {
       return { [field]: arr };
     });
   }
-  clearFilters = () => this.setState({ search: "", fKravsett: [], fKategori: [], fRelevans: [] });
+  clearFilters = () => this.setState({ search: "", fKravsett: [], fKategori: [], fRelevans: [], fVektning: [], fPrioritet: [] });
   clearSelection = () => this.setState({ selected: {} });
   toggleSelect(id) {
     this.setState((s) => {
@@ -440,6 +486,8 @@ class Component extends DCLogic {
       if (s.fKravsett.length && !k.kravsettList.some((x) => s.fKravsett.includes(x))) return false;
       if (s.fKategori.length && !s.fKategori.includes(k.kategori)) return false;
       if (s.fRelevans.length && !s.fRelevans.some((key) => k.relevans[key])) return false;
+      if (s.fVektning.length && !s.fVektning.includes(k.vektning)) return false;
+      if (s.fPrioritet.length && !s.fPrioritet.includes(k.prioritet)) return false;
       return true;
     });
   }
@@ -468,11 +516,11 @@ class Component extends DCLogic {
     let rows = this.sortList(this.filtered());
     if (selIds.length) rows = rows.filter((k) => sel[k.id]);
     if (!rows.length) return;
-    const headers = ["Kategori", "Underkategori", "Overskrift", "Kravtekst", "Rasjonale", "Referanse", "Referanse-lenke", "Kravsett", "Relevant for"];
+    const headers = ["Kategori", "Underkategori", "Overskrift", "Kravtekst", "Rasjonale", "Referanse", "Referanse-lenke", "Kravsett", "Vektning", "Prioritet", "Relevant for"];
     const lines = [headers.join(";")];
     rows.forEach((k) => {
       const rel = this.REL.filter((r) => k.relevans[r.key]).map((r) => r.label).join(", ");
-      lines.push([k.kategori, k.underkategori, k.overskrift, k.kravtekst, k.rasjonale, (k.refLabel || ""), (k.refUrl || ""), k.kravsettStr, rel].map((c) => this.csvEscape(c)).join(";"));
+      lines.push([k.kategori, k.underkategori, k.overskrift, k.kravtekst, k.rasjonale, (k.refLabel || ""), (k.refUrl || ""), k.kravsettStr, k.vektning, k.prioritet, rel].map((c) => this.csvEscape(c)).join(";"));
     });
     const csv = "\uFEFF" + lines.join("\r\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -520,15 +568,21 @@ class Component extends DCLogic {
     // facets (counts from full dataset)
     const all = s.krav;
     const countKravsett = {}, countKategori = {}, countRel = { onprem: 0, iaas: 0, paas: 0, saas: 0 };
+    const countVekt = {}, countPri = {};
     all.forEach((k) => {
       k.kravsettList.forEach((v) => { countKravsett[v] = (countKravsett[v] || 0) + 1; });
       countKategori[k.kategori] = (countKategori[k.kategori] || 0) + 1;
       this.REL.forEach((r) => { if (k.relevans[r.key]) countRel[r.key]++; });
+      if (k.vektning) countVekt[k.vektning] = (countVekt[k.vektning] || 0) + 1;
+      if (k.prioritet) countPri[k.prioritet] = (countPri[k.prioritet] || 0) + 1;
     });
     const col = new Intl.Collator("nb");
     const kravsettFacets = Object.keys(countKravsett).sort(col.compare).map((v) => this.facet("fKravsett", v, v, countKravsett[v]));
     const kategoriFacets = Object.keys(countKategori).sort(col.compare).map((v) => this.facet("fKategori", v, v, countKategori[v]));
     const relevansFacets = this.REL.map((r) => this.facet("fRelevans", r.key, r.label, countRel[r.key]));
+    const VEKT_ORDER = ["Obligatorisk", "Høy", "Lav"];
+    const vektningFacets = VEKT_ORDER.filter((v) => countVekt[v]).map((v) => this.facet("fVektning", v, v, countVekt[v]));
+    const prioritetFacets = Object.keys(countPri).sort(col.compare).map((v) => this.facet("fPrioritet", v, "Prioritet " + v, countPri[v]));
 
     // selection decorate + grouping
     const decorate = (k) => {
@@ -537,6 +591,10 @@ class Component extends DCLogic {
         selected,
         hasUnder: !!(k.underkategori && k.underkategori.trim()),
         hasKravsett: k.kravsettList.length > 0,
+        hasVektning: !!k.vektning,
+        hasPrioritet: !!k.prioritet,
+        vektColor: k.vektning === "Obligatorisk" ? "#a13a28" : (k.vektning === "Høy" ? "#b45309" : "#3f6212"),
+        vektBg: k.vektning === "Obligatorisk" ? "#fdf0ec" : (k.vektning === "Høy" ? "#fef3e2" : "#f1f7e3"),
         relevansMargin: k.kravsettList.length > 0 ? "11px" : "0",
         hasRasjonale: !!(k.rasjonale && k.rasjonale.trim()),
         hasRefLink: !!(k.refUrl && k.refUrl.trim()),
@@ -601,7 +659,7 @@ class Component extends DCLogic {
       selectedCount,
       showEmpty: !s.loading && !s.hasError && all.length > 0 && sorted.length === 0,
       exportLabel: selectedCount > 0 ? ("Eksporter " + selectedCount) : "Eksporter alle",
-      kravsettFacets, kategoriFacets, relevansFacets,
+      kravsettFacets, kategoriFacets, relevansFacets, vektningFacets, prioritetFacets,
       visibleGroups,
       // select-all box
       allBoxBg: allVisibleSelected ? "var(--accent,#4f46e5)" : "#fff",
