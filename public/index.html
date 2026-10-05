@@ -19,6 +19,23 @@
     ::-webkit-scrollbar-thumb:hover{background:#b9bec6;background-clip:content-box}
     @keyframes kbspin{to{transform:rotate(360deg)}}
     @keyframes kbpulse{0%,100%{opacity:.55}50%{opacity:1}}
+    .kb-md{font-size:14px; line-height:1.6; color:#3b424c}
+    .kb-md h1{font-size:21px; letter-spacing:-.3px; color:#1f2430; margin:16px 0 8px}
+    .kb-md h2{font-size:17px; color:#1f2430; margin:26px 0 8px; padding-bottom:6px; border-bottom:1px solid #e7eaee}
+    .kb-md h3,.kb-md h4{font-size:14.5px; color:#1f2430; margin:18px 0 6px}
+    .kb-md p{margin:0 0 12px}
+    .kb-md ul,.kb-md ol{margin:0 0 12px; padding-left:22px}
+    .kb-md li{margin:3px 0}
+    .kb-md a{color:var(--accent-ink,#3730a3); font-weight:600}
+    .kb-md code{font-family:ui-monospace,Consolas,monospace; font-size:12.5px; background:#f0f1f4; border:1px solid #e2e5ea; padding:1px 5px; border-radius:5px}
+    .kb-md pre{background:#f7f8fa; border:1px solid #e7eaee; border-radius:9px; padding:12px 14px; overflow-x:auto; margin:0 0 12px}
+    .kb-md pre code{background:none; border:none; padding:0; white-space:pre}
+    .kb-md blockquote{margin:0 0 12px; padding:8px 14px; border-left:3px solid var(--accent-border,#c7d2fe); background:#f7f8fa; border-radius:0 8px 8px 0}
+    .kb-md hr{border:none; border-top:1px solid #e7eaee; margin:20px 0}
+    .kb-md .kb-tbl{overflow-x:auto; margin:0 0 14px}
+    .kb-md table{border-collapse:collapse; width:100%; font-size:13px}
+    .kb-md th,.kb-md td{text-align:left; vertical-align:top; padding:7px 10px; border-bottom:1px solid #e7eaee}
+    .kb-md th{background:#f7f8fa; font-weight:700; color:#1f2430}
   </style>
 </helmet>
 
@@ -43,6 +60,10 @@
         <span style="font-size:16px; font-weight:700;">{{ selectedCount }}</span>
         <span style="font-size:12px; font-weight:600; opacity:.8;">valgt</span>
       </div>
+      <button onClick="{{ openHelp }}" title="Slik bruker du kravbanken" style="cursor:pointer; border:1px solid #dfe3e8; background:#fff; color:#5a626c; font-family:inherit; font-size:13px; font-weight:600; padding:9px 14px; border-radius:9px; display:flex; align-items:center; gap:7px;" style-hover="background:#f3f4f6;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Veiledning
+      </button>
       <button onClick="{{ clearSelection }}" style="cursor:pointer; border:1px solid #dfe3e8; background:#fff; color:#5a626c; font-family:inherit; font-size:13px; font-weight:600; padding:9px 14px; border-radius:9px;" style-hover="background:#f3f4f6;">Tøm valg</button>
       <button onClick="{{ exportCsv }}" title="Last ned valgte krav som CSV (semikolon-separert for norsk Excel)" style="cursor:pointer; border:none; background:var(--accent,#4f46e5); color:#fff; font-family:inherit; font-size:13px; font-weight:700; padding:10px 18px; border-radius:9px; display:flex; align-items:center; gap:8px; box-shadow:0 1px 2px rgba(20,30,60,.12);" style-hover="filter:brightness(1.07);">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -174,6 +195,7 @@
           <div style="display:flex; align-items:center; gap:7px;">
             <span style="font-size:12.5px; color:#8a9099; font-weight:600;">Sorter</span>
             <select value="{{ sortBy }}" onChange="{{ onSortBy }}" style="font-family:inherit; font-size:13px; font-weight:600; color:#3b424c; padding:7px 28px 7px 11px; border:1px solid #dfe3e8; border-radius:9px; background:#fff url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 fill=%22none%22 stroke=%22%238a9099%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226 9 12 15 18 9%22/></svg>') no-repeat right 9px center; outline:none; cursor:pointer; appearance:none; -webkit-appearance:none;">
+              <option value="id">ID</option>
               <option value="overskrift">Overskrift (A–Å)</option>
               <option value="kategori">Kategori</option>
               <option value="kravsett">Kravsett</option>
@@ -228,6 +250,9 @@
 
                   <div style="flex:1; min-width:0;">
                     <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:7px;">
+                      <sc-if value="{{ k.hasKravId }}" hint-placeholder-val="{{ true }}">
+                        <span style="flex:none; margin-top:1px; font-family:ui-monospace, 'SFMono-Regular', Consolas, monospace; font-size:12px; font-weight:600; color:#5a626c; background:#f0f1f4; border:1px solid #e2e5ea; padding:2px 8px; border-radius:6px; white-space:nowrap;">{{ k.kravId }}</span>
+                      </sc-if>
                       <h3 style="margin:0; font-size:15.5px; font-weight:700; letter-spacing:-.2px; line-height:1.3; color:#1f2430; flex:1;">{{ k.overskrift }}</h3>
                       <sc-if value="{{ k.hasVektning }}" hint-placeholder-val="{{ false }}">
                         <span style="flex:none; font-size:11px; font-weight:700; letter-spacing:.3px; color:{{ k.vektColor }}; background:{{ k.vektBg }}; padding:4px 10px; border-radius:20px; white-space:nowrap;">{{ k.vektning }}</span>
@@ -247,18 +272,23 @@
 
                     <p style="margin:0 0 12px; font-size:14px; line-height:1.55; color:#3b424c; text-wrap:pretty;">{{ k.kravtekst }}</p>
 
-                    <sc-if value="{{ k.hasRefLink }}" hint-placeholder-val="{{ false }}">
-                      <a href="{{ k.refUrl }}" target="_blank" rel="noopener noreferrer" onClick="{{ k.openRef }}" style="display:inline-flex; align-items:center; gap:7px; margin-bottom:13px; padding:6px 12px; background:var(--accent-soft,#eef2ff); border:1px solid var(--accent-border,#c7d2fe); border-radius:7px; color:var(--accent-ink,#3730a3); font-size:12.5px; font-weight:700; text-decoration:none; max-width:100%;" style-hover="filter:brightness(.97); text-decoration:underline;">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ k.refLabel }}</span>
-                      </a>
-                    </sc-if>
-
-                    <sc-if value="{{ k.hasRefText }}" hint-placeholder-val="{{ false }}">
-                      <span style="display:inline-flex; align-items:center; gap:7px; margin-bottom:13px; padding:6px 12px; background:var(--accent-soft,#eef2ff); border:1px solid var(--accent-border,#c7d2fe); border-radius:7px; color:var(--accent-ink,#3730a3); font-size:12.5px; font-weight:700; max-width:100%;">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="13" y2="17"></line></svg>
-                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ k.refLabel }}</span>
-                      </span>
+                    <sc-if value="{{ k.hasRef }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:13px;">
+                        <sc-for list="{{ k.refList }}" as="ref" hint-placeholder-count="1">
+                          <sc-if value="{{ ref.isLink }}" hint-placeholder-val="{{ false }}">
+                            <a href="{{ ref.url }}" target="_blank" rel="noopener noreferrer" onClick="{{ ref.open }}" style="display:inline-flex; align-items:center; gap:7px; padding:6px 12px; background:var(--accent-soft,#eef2ff); border:1px solid var(--accent-border,#c7d2fe); border-radius:7px; color:var(--accent-ink,#3730a3); font-size:12.5px; font-weight:700; text-decoration:none; max-width:100%;" style-hover="filter:brightness(.97); text-decoration:underline;">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                              <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ ref.label }}</span>
+                            </a>
+                          </sc-if>
+                          <sc-if value="{{ ref.isText }}" hint-placeholder-val="{{ true }}">
+                            <span style="display:inline-flex; align-items:center; gap:7px; padding:6px 12px; background:var(--accent-soft,#eef2ff); border:1px solid var(--accent-border,#c7d2fe); border-radius:7px; color:var(--accent-ink,#3730a3); font-size:12.5px; font-weight:700; max-width:100%;">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="13" y2="17"></line></svg>
+                              <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ ref.label }}</span>
+                            </span>
+                          </sc-if>
+                        </sc-for>
+                      </div>
                     </sc-if>
 
                     <sc-if value="{{ k.hasRasjonale }}" hint-placeholder-val="{{ true }}">
@@ -296,6 +326,32 @@
       </div>
     </main>
   </div>
+
+  <!-- ============ VEILEDNING (POPUP) ============ -->
+  <sc-if value="{{ helpOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeHelp }}" style="position:fixed; inset:0; z-index:100; background:rgba(20,26,38,.45); display:flex; align-items:center; justify-content:center; padding:24px;">
+      <div role="dialog" aria-modal="true" aria-label="Veiledning" onClick="{{ stopClick }}" style="display:flex; flex-direction:column; width:100%; max-width:760px; max-height:calc(100vh - 48px); background:#fff; border-radius:14px; box-shadow:0 20px 60px rgba(20,26,38,.25); overflow:hidden;">
+        <div style="flex:none; display:flex; align-items:center; gap:12px; padding:16px 22px; border-bottom:1px solid #e7eaee;">
+          <span style="width:7px; height:18px; border-radius:3px; background:var(--accent,#4f46e5);"></span>
+          <span style="flex:1; font-size:16px; font-weight:700; letter-spacing:-.2px;">Veiledning</span>
+          <button onClick="{{ closeHelp }}" aria-label="Lukk" title="Lukk (Esc)" style="cursor:pointer; border:none; background:none; color:#8a9099; padding:6px; border-radius:8px; display:flex;" style-hover="background:#f3f4f6; color:#1f2430;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div class="kb-md" style="flex:1; min-height:0; overflow-y:auto; padding:8px 26px 28px;">
+          <sc-if value="{{ helpLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; justify-content:center; padding:48px 0;">
+              <div style="width:26px; height:26px; border:3px solid #e3e6ea; border-top-color:var(--accent,#4f46e5); border-radius:50%; animation:kbspin .8s linear infinite;"></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ helpHasError }}" hint-placeholder-val="{{ false }}">
+            <p style="color:#a13a28;">{{ helpError }}</p>
+          </sc-if>
+          {{ helpContent }}
+        </div>
+      </div>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{
@@ -314,9 +370,13 @@ class Component extends DCLogic {
     fRelevans: [],
     fVektning: [],
     fPrioritet: [],
-    sortBy: "overskrift",
+    sortBy: "id",
     groupBy: "kategori",
     selected: {},
+    helpOpen: false,
+    helpLoading: false,
+    helpError: "",
+    helpMd: null,
   };
 
   REL = [
@@ -328,6 +388,110 @@ class Component extends DCLogic {
 
   componentDidMount() {
     this.load();
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && this.state.helpOpen) this.closeHelp();
+    });
+  }
+
+  // ---------- veiledning ----------
+  openHelp = async () => {
+    this.setState({ helpOpen: true });
+    if (this.state.helpMd !== null || this.state.helpLoading) return;
+    this.setState({ helpLoading: true, helpError: "" });
+    try {
+      const r = await fetch("veiledning.md", { cache: "no-store" });
+      if (!r.ok) throw new Error("Fant ikke veiledning.md (status " + r.status + ").");
+      this.setState({ helpMd: await r.text(), helpLoading: false });
+    } catch (e) {
+      this.setState({ helpLoading: false, helpError: "Kunne ikke laste veiledningen. " + (e.message || String(e)) });
+    }
+  };
+  closeHelp = () => this.setState({ helpOpen: false });
+
+  // Enkel markdown -> React-elementer (ingen rå HTML, så innholdet kan ikke injisere skript).
+  renderMarkdown(md) {
+    if (this._mdSrc === md) return this._mdOut;
+    const h = window.React.createElement;
+    const lines = md.split(/\r?\n/);
+    const out = [];
+    let i = 0, key = 0;
+
+    // Tillat http(s), mailto og relative lenker; alle andre skjemaer (javascript:, data: …) blokkeres.
+    const safeUrl = (u) => (/^[a-z][a-z0-9+.-]*:/i.test(u) && !/^(https?|mailto):/i.test(u) ? "#" : u);
+    const inline = (text) => {
+      const parts = [];
+      const re = /(`[^`]+`)|\[([^\]]+)\]\(\s*([^)\s]+)\s*\)|\*\*(.+?)\*\*|\*([^*]+)\*|_([^_]+)_/g;
+      let last = 0, m, k = 0;
+      while ((m = re.exec(text))) {
+        if (m.index > last) parts.push(text.slice(last, m.index));
+        if (m[1]) parts.push(h("code", { key: k++ }, m[1].slice(1, -1)));
+        else if (m[2]) {
+          const url = safeUrl(m[3]);
+          const ext = /^https?:/i.test(url);
+          parts.push(h("a", { key: k++, href: url, target: ext ? "_blank" : undefined, rel: ext ? "noopener noreferrer" : undefined }, inline(m[2])));
+        }
+        else if (m[4]) parts.push(h("strong", { key: k++ }, inline(m[4])));
+        else parts.push(h("em", { key: k++ }, inline(m[5] || m[6])));
+        last = re.lastIndex;
+      }
+      if (last < text.length) parts.push(text.slice(last));
+      return parts;
+    };
+    const cells = (line) => line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
+    const isBlockStart = (l) => /^(#{1,6}\s|```|>|\s*[-*+]\s|\s*\d+[.)]\s|\|)/.test(l) || /^(-{3,}|\*{3,})\s*$/.test(l.trim());
+
+    while (i < lines.length) {
+      const line = lines[i];
+      const t = line.trim();
+      if (!t) { i++; continue; }
+
+      let m;
+      if ((m = t.match(/^(#{1,6})\s+(.*)$/))) {
+        out.push(h("h" + m[1].length, { key: key++ }, inline(m[2])));
+        i++;
+      } else if (t.startsWith("```")) {
+        const code = [];
+        i++;
+        while (i < lines.length && !lines[i].trim().startsWith("```")) code.push(lines[i++]);
+        i++;
+        out.push(h("pre", { key: key++ }, h("code", null, code.join("\n"))));
+      } else if (/^(-{3,}|\*{3,})$/.test(t)) {
+        out.push(h("hr", { key: key++ }));
+        i++;
+      } else if (t.startsWith(">")) {
+        const q = [];
+        while (i < lines.length && lines[i].trim().startsWith(">")) q.push(lines[i++].trim().replace(/^>\s?/, ""));
+        out.push(h("blockquote", { key: key++ }, inline(q.join(" "))));
+      } else if (/^[-*+]\s/.test(t) || /^\d+[.)]\s/.test(t)) {
+        const ordered = /^\d/.test(t);
+        const items = [];
+        while (i < lines.length) {
+          const l = lines[i].trim();
+          if (ordered ? /^\d+[.)]\s/.test(l) : /^[-*+]\s/.test(l)) items.push(l.replace(/^([-*+]|\d+[.)])\s+/, ""));
+          else if (l && !isBlockStart(lines[i]) && items.length) items[items.length - 1] += " " + l;
+          else break;
+          i++;
+        }
+        out.push(h(ordered ? "ol" : "ul", { key: key++ }, items.map((it, n) => h("li", { key: n }, inline(it)))));
+      } else if (t.startsWith("|")) {
+        const rows = [];
+        while (i < lines.length && lines[i].trim().startsWith("|")) rows.push(cells(lines[i++]));
+        const head = rows.shift() || [];
+        const body = rows.filter((r) => !r.every((c) => /^:?-{2,}:?$/.test(c) || c === ""));
+        out.push(h("div", { key: key++, className: "kb-tbl" },
+          h("table", null,
+            h("thead", null, h("tr", null, head.map((c, n) => h("th", { key: n }, inline(c))))),
+            h("tbody", null, body.map((r, rn) => h("tr", { key: rn }, head.map((_, n) => h("td", { key: n }, inline(r[n] || ""))))))
+          )));
+      } else {
+        const para = [];
+        while (i < lines.length && lines[i].trim() && !isBlockStart(lines[i])) para.push(lines[i++].trim());
+        out.push(h("p", { key: key++ }, inline(para.join(" "))));
+      }
+    }
+    this._mdSrc = md;
+    this._mdOut = out;
+    return out;
   }
 
   async load() {
@@ -386,6 +550,7 @@ class Component extends DCLogic {
           }
           return -1;
         };
+        idx.kravId = headers.findIndex((h) => h.replace(/[\s.\-_]/g, "") === "id");
         idx.under = headers.findIndex((h) => h.replace(/[\s.\-_]/g, "").includes("underkategori"));
         idx.overskrift = find("overskrift", "tittel");
         idx.kravtekst = find("kravtekst", "beskrivelse");
@@ -413,13 +578,14 @@ class Component extends DCLogic {
         saas: truthy(g(idx.saas)),
       };
       const relevansList = this.REL.filter((r) => relevans[r.key]).map((r) => ({ label: r.label, text: r.text, bg: r.bg }));
-      const ref = this.parseRef(g(idx.referanse));
+      const refList = this.splitRefs(g(idx.referanse)).map((r) => this.parseRef(r)).filter((r) => r.label);
       const kravsettList = g(idx.kravsett).split(/\s*,\s*/).map((x) => x.trim()).filter(Boolean);
       const vektning = (g(idx.vekt) || "").trim();
       const prioritet = (g(idx.pri) || "").trim();
 
       out.push({
         id: kategori.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + out.length + "-" + (overskrift.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24)),
+        kravId: g(idx.kravId),
         kategori,
         kravsettList,
         kravsettStr: kravsettList.join(", "),
@@ -427,9 +593,10 @@ class Component extends DCLogic {
         overskrift,
         kravtekst,
         rasjonale: g(idx.rasjonale),
-        referanse: ref.raw,
-        refLabel: ref.label,
-        refUrl: ref.url,
+        referanse: g(idx.referanse),
+        refList,
+        refLabelStr: refList.map((r) => r.label).join(", "),
+        refUrlStr: refList.map((r) => r.url).filter(Boolean).join(", "),
         vektning,
         prioritet,
         relevans,
@@ -437,6 +604,20 @@ class Component extends DCLogic {
       });
     }
     return out;
+  }
+
+  // Del referansefeltet på komma, men ikke komma inne i [lenketekst] eller (url).
+  splitRefs(raw) {
+    const parts = [];
+    let depth = 0, cur = "";
+    for (const ch of (raw || "")) {
+      if (ch === "[" || ch === "(") depth++;
+      else if ((ch === "]" || ch === ")") && depth > 0) depth--;
+      if (ch === "," && depth === 0) { parts.push(cur); cur = ""; continue; }
+      cur += ch;
+    }
+    parts.push(cur);
+    return parts.map((p) => p.trim()).filter(Boolean);
   }
 
   parseRef(raw) {
@@ -480,7 +661,7 @@ class Component extends DCLogic {
     const q = s.search.trim().toLowerCase();
     return s.krav.filter((k) => {
       if (q) {
-        const hay = (k.overskrift + " " + k.kravtekst + " " + k.kategori + " " + k.underkategori + " " + k.rasjonale + " " + k.kravsettStr).toLowerCase();
+        const hay = (k.kravId + " " + k.overskrift + " " + k.kravtekst + " " + k.kategori + " " + k.underkategori + " " + k.rasjonale + " " + k.kravsettStr).toLowerCase();
         if (!hay.includes(q)) return false;
       }
       if (s.fKravsett.length && !k.kravsettList.some((x) => s.fKravsett.includes(x))) return false;
@@ -494,9 +675,10 @@ class Component extends DCLogic {
 
   sortList(list) {
     const by = this.state.sortBy;
-    const c = new Intl.Collator("nb");
+    const c = new Intl.Collator("nb", { numeric: true });
     const arr = list.slice();
     arr.sort((a, b) => {
+      if (by === "id") return c.compare(a.kravId, b.kravId) || c.compare(a.overskrift, b.overskrift);
       if (by === "kravsett") return c.compare(a.kravsettStr, b.kravsettStr) || c.compare(a.kategori, b.kategori) || c.compare(a.overskrift, b.overskrift);
       if (by === "kategori") return c.compare(a.kategori, b.kategori) || c.compare(a.underkategori, b.underkategori) || c.compare(a.overskrift, b.overskrift);
       return c.compare(a.overskrift, b.overskrift);
@@ -516,11 +698,11 @@ class Component extends DCLogic {
     let rows = this.sortList(this.filtered());
     if (selIds.length) rows = rows.filter((k) => sel[k.id]);
     if (!rows.length) return;
-    const headers = ["Kategori", "Underkategori", "Overskrift", "Kravtekst", "Rasjonale", "Referanse", "Referanse-lenke", "Kravsett", "Vektning", "Prioritet", "Relevant for"];
+    const headers = ["ID", "Kategori", "Underkategori", "Overskrift", "Kravtekst", "Rasjonale", "Referanse", "Referanse-lenke", "Kravsett", "Vektning", "Prioritet", "Relevant for"];
     const lines = [headers.join(";")];
     rows.forEach((k) => {
       const rel = this.REL.filter((r) => k.relevans[r.key]).map((r) => r.label).join(", ");
-      lines.push([k.kategori, k.underkategori, k.overskrift, k.kravtekst, k.rasjonale, (k.refLabel || ""), (k.refUrl || ""), k.kravsettStr, k.vektning, k.prioritet, rel].map((c) => this.csvEscape(c)).join(";"));
+      lines.push([k.kravId, k.kategori, k.underkategori, k.overskrift, k.kravtekst, k.rasjonale, k.refLabelStr, k.refUrlStr, k.kravsettStr, k.vektning, k.prioritet, rel].map((c) => this.csvEscape(c)).join(";"));
     });
     const csv = "\uFEFF" + lines.join("\r\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -589,6 +771,7 @@ class Component extends DCLogic {
       const selected = !!s.selected[k.id];
       return Object.assign({}, k, {
         selected,
+        hasKravId: !!k.kravId,
         hasUnder: !!(k.underkategori && k.underkategori.trim()),
         hasKravsett: k.kravsettList.length > 0,
         hasVektning: !!k.vektning,
@@ -597,9 +780,14 @@ class Component extends DCLogic {
         vektBg: k.vektning === "Obligatorisk" ? "#fdf0ec" : (k.vektning === "Høy" ? "#fef3e2" : "#f1f7e3"),
         relevansMargin: k.kravsettList.length > 0 ? "11px" : "0",
         hasRasjonale: !!(k.rasjonale && k.rasjonale.trim()),
-        hasRefLink: !!(k.refUrl && k.refUrl.trim()),
-        hasRefText: !!(k.refLabel && k.refLabel.trim() && !(k.refUrl && k.refUrl.trim())),
-        openRef: (e) => { e.stopPropagation(); },
+        hasRef: k.refList.length > 0,
+        refList: k.refList.map((r) => ({
+          label: r.label,
+          url: r.url,
+          isLink: !!r.url,
+          isText: !r.url,
+          open: (e) => { e.stopPropagation(); },
+        })),
         boxBg: selected ? "var(--accent,#4f46e5)" : "#fff",
         boxBorder: selected ? "var(--accent,#4f46e5)" : "#cbd0d7",
         checkOpacity: selected ? 1 : 0,
@@ -671,6 +859,15 @@ class Component extends DCLogic {
       onGroupBy: (e) => this.setState({ groupBy: e.target.value }),
       clearFilters: this.clearFilters,
       clearSelection: this.clearSelection,
+      // veiledning
+      helpOpen: s.helpOpen,
+      helpLoading: s.helpLoading,
+      helpHasError: !!s.helpError,
+      helpError: s.helpError,
+      helpContent: s.helpMd ? this.renderMarkdown(s.helpMd) : null,
+      openHelp: this.openHelp,
+      closeHelp: this.closeHelp,
+      stopClick: (e) => e.stopPropagation(),
       exportCsv: this.exportCsv,
       toggleSelectAll: () => {
         this.setState((st) => {
