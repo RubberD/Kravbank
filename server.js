@@ -12,10 +12,10 @@ app.use(helmet.contentSecurityPolicy({
     defaultSrc: ["'self'"],
     styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://unpkg.com"],
     scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://unpkg.com"],
-    "frame-ancestors": ["'none'"],  
+    "frame-ancestors": ["'none'"],
   },
-  xFrameOptions: { action: "deny" },
 }));
+app.use(helmet.xFrameOptions({ action: "deny" }));
 
 // Definer regler for rate limiting
 const limiter = rateLimit({
@@ -34,6 +34,12 @@ app.get('/', (req, res) => {
 
 // Serve all static assets (JS, markdown files, images, etc.)
 app.use(express.static('public'));
+
+// Egen 404-håndtering. Express sin innebygde 404 overskriver CSP-headeren fra Helmet
+// med "default-src 'none'", som mangler frame-ancestors og form-action (ZAP-varsel 10055).
+app.use((req, res) => {
+  res.status(404).type('text/plain').send('Fant ikke siden.');
+});
 
 app.listen(PORT, () => {
   console.log(`Kravbank running on http://localhost:${PORT}`);
