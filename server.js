@@ -10,8 +10,9 @@ const PORT = process.env.PORT || 3000;
 app.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ["'self'"],
-    styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://unpkg.com"],
-    scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://unpkg.com"],
+    scriptSrc: ["'self'", "'unsafe-eval'", "https://unpkg.com"],
+    styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+    fontSrc: ["'self'", "https://fonts.gstatic.com"],
     "frame-ancestors": ["'none'"],
   },
 }));
