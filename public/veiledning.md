@@ -1,6 +1,6 @@
 # Veiledning til IKT-kravbanken
 
-Kravbanken er en samling krav du kan bruke når du skal anskaffe digitale tjenester. Du finner fram til kravene som passer anskaffelsen din, velger dem ut og eksporterer dem til en CSV-fil som kan åpnes i Excel.
+Kravbanken er en samling krav du kan bruke når du skal anskaffe digitale tjenester. Du finner fram til kravene som passer anskaffelsen din, velger dem ut og eksporterer dem til en CSV-fil som kan åpnes i Excel...
 
 ## Slik finner du krav
 
